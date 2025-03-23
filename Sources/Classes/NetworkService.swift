@@ -6,13 +6,15 @@
 //
 import Foundation
 
-class NetworkService {
-    let session: URLSession
+final class NetworkService: Sendable {
     
-    init(session: URLSession = .shared) {
-        self.session = session
-    }
-    
+    static let sessionManager: URLSession = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 30 // seconds
+        configuration.timeoutIntervalForResource = 30 // seconds
+        return URLSession(configuration: configuration)
+    }()
+
     func request<T: Decodable>(
         url: URL,
         method: HTTPMethod,
@@ -35,21 +37,26 @@ class NetworkService {
     // Private helpers
     private func buildRequest(url: URL, method: HTTPMethod, headers: [String: String], body: Data?) throws -> URLRequest {
         var request = URLRequest(url: url)
+        // standard headers
+        for (key, value) in DefaultRequest.headers{
+            request.setValue(value, forHTTPHeaderField: key)
+        }
+        //custom header
         for (key, value) in headers{
             request.setValue(value, forHTTPHeaderField: key)
         }
-        
         if method != .get && method != .delete {
             request.httpBody = body
         } else if body != nil && method == .get {
             throw NetworkError.bodyNotAllowedForMethod(method)
         }
+        request.httpMethod = method.rawValue
         return request
         
     }
     
     private func performRequest<T: Decodable>(_ request: URLRequest) async throws -> T {
-        let (data, response) = try await self.session.data(for: request)
+        let (data, response) = try await NetworkService.sessionManager.data(for: request)
         if let httpResponse = response as? HTTPURLResponse {
             switch httpResponse.statusCode {
             case 200...299: // Success codes (2xx)
@@ -66,4 +73,11 @@ class NetworkService {
         }
         throw NetworkError.unexpectedResponseType
     }
+}/*
+extension URLSession {
+    func data(for req: URLRequest) async throws -> (Data, URLResponse) {
+        // this call is in a non-isolated context, so all is good :)
+        try await URLSession.shared.data(for: req, delegate: nil)
+    }
 }
+*/

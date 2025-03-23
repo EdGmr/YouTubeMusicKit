@@ -6,7 +6,7 @@
 //
 import Foundation
 
-@available(macOS 13.0, *)
+@available(macOS 14.0, *)
 public extension YouTubeMusic {
      struct timer{
         var clock: ContinuousClock
@@ -21,7 +21,7 @@ public extension YouTubeMusic {
     }
 }
 
-@available(macOS 13.0, *)
+@available(macOS 14.0, *)
 public extension YouTubeMusic.timer {
     mutating func startTimer(){
         self.startTime = clock.now
@@ -34,7 +34,7 @@ public extension YouTubeMusic.timer {
     }
 }
 
-@available(macOS 13.0, *)
+@available(macOS 14.0, *)
 public extension YouTubeMusic.log{
     func printSongs(songs: [Song]){
         var i = 1

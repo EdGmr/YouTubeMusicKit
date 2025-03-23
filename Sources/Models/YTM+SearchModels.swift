@@ -10,12 +10,12 @@
 import Foundation
 
 
-public struct SearchResult<T: Decodable> {
+public struct SearchResult<T: Codable> {
     public let items: [T]
     public let totalResults: Int?
 }
 
-public struct Song: Decodable{
+public struct Song: Codable{
     public let videoID: String
     public let artist: String
     public let title: String
