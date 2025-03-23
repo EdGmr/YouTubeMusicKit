@@ -62,7 +62,7 @@ extension YouTubeMusic.Request {
 }
 
 extension YouTubeMusic.Request {
-     struct DefaultParam {
+    enum DefaultParam {
          static let clientName = "WEB_REMIX"
          static let version = "1.20250321.01.00"
          static let hl = "en"

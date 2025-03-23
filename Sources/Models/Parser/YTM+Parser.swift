@@ -4,37 +4,28 @@
 //
 //  Created by Eduard Gozembiler on 23.03.25.
 //
+import Swift
 import Foundation
 extension YouTubeMusic {
-    struct Parser{
-        
-    }
+    enum Parser{
+        static let songPath = [
+            "contents",
+            "tabbedSearchResultsRenderer",
+            "tabs",
+            "0",
+            "tabRenderer",
+            "content",
+            "sectionListRenderer",
+            "contents"]
+    }/*
+    let title = item.musicResponsiveListItemRenderer?.flexColumns![0].musicResponsiveListItemFlexColumnRenderer!.text!.runs![0].text
+    let author = item.musicResponsiveListItemRenderer?.flexColumns![1].musicResponsiveListItemFlexColumnRenderer!.text!.runs![0].text
+    let vID = item.musicResponsiveListItemRenderer?.playlistItemData?.videoID
+    static musicResponsiveListItemRenderer?.playlistItemData?.videoID*/
 }
 
 extension YouTubeMusic.Parser{
-    func setRoot(_ date: Data) -> Data? {
-        let json = try? JSONSerialization.jsonObject(
-            with: date,
-            options: .allowFragments
-        )
-        let root = json as? [String: Any]
-        let contents = root!["contents"] as? [String: Any]
-        let tabbed = contents!["tabbedSearchResultsRenderer"] as? [String: Any]
-        let tabs = tabbed!["tabs"] as? [[String: Any]]
-        let tabD = tabs![0]
-        let tabR = tabD["tabRenderer"] as? [String: Any]
-        let content = tabR!["content"] as? [String: Any]
-        let sec = content!["sectionListRenderer"] as? [String: Any]
-        let res = sec!["contents"]
-        guard
-            let data = try? JSONSerialization.data(withJSONObject: res!)
-        else{
-            return nil
-        }
-        return data
-    }
-    
-    func decode(){
+    static func decode(){
         
     }
 }
@@ -83,16 +74,16 @@ extension YouTubeMusic.Parser{
 
 // MARK: - Parsing funcs for the different options
 extension YouTubeMusic.Parser{
-    static func parseSong(data: Data) throws-> YouTubeMusic.SearchResult<YouTubeMusic.Song>{
-        let dummy_res = YouTubeMusic.SearchResult(items: [YouTubeMusic.Song(videoID: "", artist: "", title: "", favorite: false, streamUrl: "")], totalResults: 1)
+    static func parseSong(data: Data) throws-> SearchResult<Song>{
+        let dummy_res = SearchResult(items: [Song(videoID: "", artist: "", title: "", favorite: false, streamUrl: "")], totalResults: 1)
         return dummy_res
     }
-    static func parseAlbum(data: Data) throws -> YouTubeMusic.SearchResult<YouTubeMusic.Song>{
-        let dummy_res = YouTubeMusic.SearchResult(items: [YouTubeMusic.Song(videoID: "", artist: "", title: "", favorite: false, streamUrl: "")], totalResults: 1)
+    static func parseAlbum(data: Data) throws -> SearchResult<Song>{
+        let dummy_res = SearchResult(items: [Song(videoID: "", artist: "", title: "", favorite: false, streamUrl: "")], totalResults: 1)
         return dummy_res
     }
-    static func parseArtist(data: Data) throws -> YouTubeMusic.SearchResult<YouTubeMusic.Song>{
-        let dummy_res = YouTubeMusic.SearchResult(items: [YouTubeMusic.Song(videoID: "", artist: "", title: "", favorite: false, streamUrl: "")], totalResults: 1)
+    static func parseArtist(data: Data) throws -> SearchResult<YouTubeMusic.Song>{
+        let dummy_res = SearchResult(items: [Song(videoID: "", artist: "", title: "", favorite: false, streamUrl: "")], totalResults: 1)
         return dummy_res
     }
 }
