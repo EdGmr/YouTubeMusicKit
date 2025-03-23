@@ -9,6 +9,7 @@
 // any entity will be listed here
 import Foundation
 
+
 public extension YouTubeMusic{
     struct SearchResult<T: Decodable> {
         public let items: [T]
@@ -23,5 +24,7 @@ public extension YouTubeMusic{
         public let streamUrl: String?
     }
     // MARK: TODO structs for different search results like playlist etc
-    
 }
+
+public typealias SearchResult = YouTubeMusic.SearchResult
+public typealias Song = YouTubeMusic.Song

@@ -67,7 +67,7 @@ extension YouTubeMusic.Request{
     }
 }
 
-// static fetches for the different requests
+// MARK: - static fetches for the different requests
 
 extension YouTubeMusic.Request{
     static func fetchSearchData(query: String) async -> Data? {
@@ -84,7 +84,6 @@ extension YouTubeMusic.Request{
             print("Error in fetchSearchData(): \(error)")
         }
         return nil
-        
     }
 }
 

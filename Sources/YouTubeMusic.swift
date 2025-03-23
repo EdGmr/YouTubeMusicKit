@@ -12,6 +12,6 @@ import Foundation
 @MainActor
 public final class YouTubeMusic: Observable {
     nonisolated public init(){
-        
     }
 }
+
