@@ -11,7 +11,7 @@ import Foundation
 @available(macOS 10.15.0, *)
 extension YouTubeMusic {
     struct Body: Codable{
-        let query: String?
+        var query: String?
         let context: Context
         init(
             query: String? = nil,
@@ -27,6 +27,9 @@ extension YouTubeMusic {
                     hl: hl),
                 user: User()
             )
+        }
+        init(query: String){
+            self.init(query: query, clientName: DefaultParam.clientName, clientVersion: DefaultParam.version, hl: DefaultParam.hl)
         }
     }
     
@@ -52,21 +55,26 @@ extension YouTubeMusic {
     struct User: Codable{
         
     }
-}
-
-extension YouTubeMusic{
-    struct DefaultParam{
-        let clientName: String
-        let version: String
-        let hl: String
-        init(
-            clientName: String = "WEB_REMIX",
-            version: String = "1.20250321.01.00",
-            hl: String = "en"
-        ){
-           self.clientName = clientName
-           self.version = version
-           self.hl = hl
-       }
+    enum Method: String{
+        case POST = "POST"
+        case GET = "GET"
     }
 }
+
+extension YouTubeMusic {
+     struct DefaultParam {
+         static let clientName = "WEB_REMIX"
+         static let version = "1.20250321.01.00"
+         static let hl = "en"
+         static let urlSearch = URL(string: "https://music.youtube.com/youtubei/v1/search")!
+         static let headers: [String: String] = [
+             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0",
+             "accept": "*//*",
+             "accept-encoding": "gzip, deflate",
+             "content-type": "application/json",
+             "content-encoding": "gzip",
+             "origin": "https://music.youtube.com",
+             "X-Goog-Visitor-Id": "CgtsSDNmbmF3OE5JSSiHwva-BjIKCgJERRIEEgAgPg%3D%3D"
+         ]
+     }
+ }
