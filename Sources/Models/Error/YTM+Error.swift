@@ -12,5 +12,6 @@ public extension YouTubeMusic{
         case responseCast
         case invalidBody
         case invalidURL
+        case parsingError(String)
     }
 }
