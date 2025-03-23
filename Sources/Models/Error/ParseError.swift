@@ -12,4 +12,5 @@ enum ParseError: Error {
     case keyError(key: String)
     case castError
     case encoderError
+    case typeError
 }

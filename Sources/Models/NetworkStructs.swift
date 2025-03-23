@@ -32,16 +32,19 @@ struct DefaultRequest{
 
 struct Body: Codable {
     var query: String?
+    var params: String?   //TODO: Figure out params
     let context: Context
     
     // Main initializer with defaults
     init(
         query: String? = nil,
+        params: String? = nil,
         clientName: String = DefaultRequest.clientName,
         clientVersion: String = DefaultRequest.version,
         hl: String = DefaultRequest.hl
     ) {
         self.query = query
+        self.params = params
         self.context = Context(
             client: Client(
                 clientName: clientName,

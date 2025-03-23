@@ -12,13 +12,14 @@ import Foundation
 @MainActor
 public final class YouTubeMusic { // basically a facade
     let netService: NetworkService
-    
+    let parseService: ParseService
     public init(){
         netService = NetworkService()
+        parseService = ParseService()
     }
     
     public func search<T: Codable>(_ query: String, option: SearchType? = nil) async throws -> SearchResult<T>? {
-        let body = Body(query: query)
+        let body = Body(query: query, params:"EgWKAQIIAWoMEA4QChADEAQQCRAF")
         let bodyData = try JSONEncoder().encode(body)
         let data = try await netService.post(url: DefaultRequest.urlSearch, body: bodyData) as Data
         let option = option ?? .song
@@ -26,7 +27,7 @@ public final class YouTubeMusic { // basically a facade
         do {
             switch option {
             case .song:
-                return try Parser.parseSong(data: data) as? SearchResult<T>
+                return try parseService.parse(jsonData: data, option: .search, searchType: .song) as SearchResult<T>
                 
             case .album:
                 return try Parser.parseAlbum(data: data) as? SearchResult<T>

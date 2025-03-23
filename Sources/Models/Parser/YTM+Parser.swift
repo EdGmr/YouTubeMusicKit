@@ -40,7 +40,7 @@ extension YouTubeMusic.Parser{
         
         //navigate through each key in the path
         for key in path {
-            //TODO: handle dictionary access when Dict index is "0" as a string and not an array index
+            //TODO: handle dictionary access when Dicit index is "0" as a string and not an array index
             if let arrayIndex = Int(key), let array = current as? [Any], arrayIndex < array.count {
                 // Handle array indexing when key is a number
                 current = array[arrayIndex]
@@ -73,15 +73,15 @@ extension YouTubeMusic.Parser{
 // MARK: - Parsing funcs for the different options
 extension YouTubeMusic.Parser{
     static func parseSong(data: Data) throws-> SearchResult<Song>{
-        let dummy_res = SearchResult(items: [Song(videoID: "", artist: "", title: "", favorite: false, streamUrl: "")], totalResults: 1)
+        let dummy_res = SearchResult(items: [Song(videoID: "", artist: "", title: "")], totalResults: 1)
         return dummy_res
     }
     static func parseAlbum(data: Data) throws -> SearchResult<Song>{
-        let dummy_res = SearchResult(items: [Song(videoID: "", artist: "", title: "", favorite: false, streamUrl: "")], totalResults: 1)
+        let dummy_res = SearchResult(items: [Song(videoID: "", artist: "", title: "")], totalResults: 1)
         return dummy_res
     }
     static func parseArtist(data: Data) throws -> SearchResult<Song>{
-        let dummy_res = SearchResult(items: [Song(videoID: "", artist: "", title: "", favorite: false, streamUrl: "")], totalResults: 1)
+        let dummy_res = SearchResult(items: [Song(videoID: "", artist: "", title: "")], totalResults: 1)
         return dummy_res
     }
 }

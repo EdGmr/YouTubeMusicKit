@@ -5,7 +5,7 @@
 //  Created by Eduard Gozembiler on 23.03.25.
 //
 
-public enum SearchType: Sendable{
+public enum SearchType{
     case song
     case playlist
     case artist

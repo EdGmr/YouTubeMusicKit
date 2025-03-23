@@ -46,7 +46,7 @@ public extension YouTubeMusic.log{
         }
     }
     
-    func logData(_ date: Data, name: String, query: String?=nil) {
+    static func logData(_ date: Data, name: String, query: String?=nil) {
         do {
             var nameToLog: String
             if let query_ = query{
