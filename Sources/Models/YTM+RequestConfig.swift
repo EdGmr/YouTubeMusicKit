@@ -9,17 +9,17 @@
 import Foundation
 
 @available(macOS 10.15.0, *)
-public extension YouTubeMusic {
-    private struct Body: Codable{
-        let query: String
+extension YouTubeMusic {
+    struct Body: Codable{
+        let query: String?
         let context: Context
         init(
-            query: String,
+            query: String? = nil,
             clientName: String,
             clientVersion: String,
             hl: String
         ) {
-            self.query = query
+            self.query = query ?? nil
             self.context = Context(
                 client: Client(
                     clientName: clientName,
@@ -30,7 +30,7 @@ public extension YouTubeMusic {
         }
     }
     
-    private struct Context: Codable {
+    struct Context: Codable {
         let client: Client
         let user: User
         init(client: Client, user: User) {
@@ -38,7 +38,7 @@ public extension YouTubeMusic {
             self.user = user
         }
     }
-    private struct Client: Codable{
+    struct Client: Codable{
         let clientName: String
         let clientVersion: String
         let hl: String
@@ -48,11 +48,25 @@ public extension YouTubeMusic {
             self.hl = hl
         }
     }
-
-    private struct User: Codable{
-
+    
+    struct User: Codable{
+        
     }
-    
-    
 }
 
+extension YouTubeMusic{
+    struct DefaultParam{
+        let clientName: String
+        let version: String
+        let hl: String
+        init(
+            clientName: String = "WEB_REMIX",
+            version: String = "1.20250321.01.00",
+            hl: String = "en"
+        ){
+           self.clientName = clientName
+           self.version = version
+           self.hl = hl
+       }
+    }
+}

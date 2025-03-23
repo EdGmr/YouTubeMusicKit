@@ -10,12 +10,12 @@
 @available(macOS 10.15.0, *)
 public extension YouTubeMusic{
     func search(query: String, option: SearchType? = nil) async throws -> [String: String]? {
+        
         let searchType: SearchType = option ?? .song
-        let engine = YTMEngine(query: query)
+        
         switch searchType{
         case .song:
-            
-            return engine.searchSong(query: query)
+            return nil
         case .album:
             return nil
         case .artist:

@@ -12,7 +12,9 @@ import Foundation
 @MainActor
 public final class YouTubeMusic: Observable {
     let testI: Int
+    private let private_test: Bool
     nonisolated public init(testI: Int) {
         self.testI = testI
+        self.private_test = true
     }
 }

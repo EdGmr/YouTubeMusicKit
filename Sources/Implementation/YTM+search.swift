@@ -4,9 +4,9 @@
 //
 //  Created by Eduard Gozembiler on 23.03.25.
 //
- extension YTMEngine {
+extension YouTubeMusic {
     func searchSong(query: String) -> [String: String]{
-        return [self.body.query:""]
+        return ["ss":""]
     }
 }
 
