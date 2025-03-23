@@ -6,23 +6,29 @@
 //
 // MARK: Interface for the search function
 // it should always return an array of songes, playlist etc. user optioned
-
+import Foundation
 @available(macOS 10.15.0, *)
 public extension YouTubeMusic{
     func search<T: Decodable>(query: String, option: SearchType? = nil) async throws -> SearchResult<T>? {
         
         let searchType: SearchType = option ?? .song
+        let data = await Request.fetchSearchData(query: query)
         
-        switch searchType{
-        case .song:
-            return nil
-        case .album:
-            return nil
-        case .artist:
-            return nil
-        case .playlist:
-            return nil
-        case .podcasts:
+        do {
+            switch searchType {
+            case .song:
+                return try Parser.parseSong(data: data!) as? SearchResult<T>
+            case .album:
+                return try Parser.parseAlbum(data: data!) as? SearchResult<T>
+            case .artist:
+                return try Parser.parseArtist(data: data!) as? SearchResult<T>
+            case .playlist:
+                return nil
+            case .podcasts:
+                return nil
+            }
+        } catch {
+            print("Error parsing search result: \(error)")
             return nil
         }
     }

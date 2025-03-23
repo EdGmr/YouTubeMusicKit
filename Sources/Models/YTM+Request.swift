@@ -12,7 +12,7 @@ extension YouTubeMusic{
         let url: URL
         let headers: [String: String]
         init(
-            body: Body? = nil,
+            body: Body?,
             method: String,
             url: URL,
             headers: [String: String]
@@ -65,7 +65,28 @@ extension YouTubeMusic.Request{
         }
         return request
     }
-    
 }
+
+// static fetches for the different requests
+
+extension YouTubeMusic.Request{
+    static func fetchSearchData(query: String) async -> Data? {
+        let body = YouTubeMusic.Body(query: query)
+        do{
+            let request = try YouTubeMusic.Request(body: body, method: "POST", url: YouTubeMusic.DefaultParam.urlSearch, headers: YouTubeMusic.DefaultParam.headers)
+            let requestPayload = try request.prepareRequest()
+            return try await request.fetch(from: requestPayload)
+        } catch YouTubeMusic.Error.invalidBody {
+            print("Invalid body in fetchSearchData")
+        } catch YouTubeMusic.Error.invalidURL {
+            print("Invalid URL in fetchSearchData")
+        } catch {
+            print("Error in fetchSearchData(): \(error)")
+        }
+        return nil
+        
+    }
+}
+
 
 

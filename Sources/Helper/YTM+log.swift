@@ -6,8 +6,37 @@
 //
 import Foundation
 
+@available(macOS 13.0, *)
 public extension YouTubeMusic {
-    func printSongs(songs: [Song]){
+     struct timer{
+        var clock: ContinuousClock
+        var startTime: ContinuousClock.Instant?
+        var endTime: ContinuousClock.Instant?
+        public init() {
+            self.clock = ContinuousClock()
+        }
+    }
+    struct log{
+        
+    }
+}
+
+@available(macOS 13.0, *)
+public extension YouTubeMusic.timer {
+    mutating func startTimer(){
+        self.startTime = clock.now
+    }
+    
+    func logTime()
+    {
+        let duration = clock.now - startTime!
+        print("Time taken = \(duration)")
+    }
+}
+
+@available(macOS 13.0, *)
+public extension YouTubeMusic.log{
+    func printSongs(songs: [YouTubeMusic.Song]){
         var i = 1
         for song in songs{
             print("search result: \(i)")

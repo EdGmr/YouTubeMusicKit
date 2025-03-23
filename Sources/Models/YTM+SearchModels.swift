@@ -7,6 +7,7 @@
 
 // MARK: - Structs for the search results
 // any entity will be listed here
+import Foundation
 
 public extension YouTubeMusic{
     struct SearchResult<T: Decodable> {
