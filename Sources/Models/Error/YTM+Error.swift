@@ -8,5 +8,9 @@
 public extension YouTubeMusic{
     enum Error: Swift.Error{
         case notFound
+        case encode
+        case responseCast
+        case invalidBody
+        case invalidURL
     }
 }
