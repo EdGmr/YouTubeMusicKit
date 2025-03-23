@@ -9,7 +9,7 @@
 
 @available(macOS 10.15.0, *)
 public extension YouTubeMusic{
-    func search(query: String, option: SearchType? = nil) async throws -> [String: String]? {
+    func search<T: Decodable>(query: String, option: SearchType? = nil) async throws -> SearchResult<T>? {
         
         let searchType: SearchType = option ?? .song
         
