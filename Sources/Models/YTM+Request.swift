@@ -7,12 +7,12 @@
 import Foundation
 extension YouTubeMusic{
     struct Request: Sendable {
-        let body: Body?
+        let body: Request.Body?
         let method: String
         let url: URL
         let headers: [String: String]
         init(
-            body: Body?,
+            body: Request.Body?,
             method: String,
             url: URL,
             headers: [String: String]
@@ -25,14 +25,15 @@ extension YouTubeMusic{
     }
 }
 
-extension YouTubeMusic.Request{
-    func encodedBody() throws -> Data?{
+
+private extension YouTubeMusic.Request{
+     func encodedBody() throws -> Data?{
         guard let body = self.body else { return nil }
         return try JSONEncoder().encode(body)
         
     }
     
-    func fetch(from request: URLRequest) async throws -> Data{
+     func fetch(from request: URLRequest) async throws -> Data{
         let (data, response) = try await URLSession.shared.data(for: request)
         if let httpResponse = response as? HTTPURLResponse {
             switch httpResponse.statusCode {
@@ -54,7 +55,7 @@ extension YouTubeMusic.Request{
         throw URLError(.unknown)
     }
     
-    func prepareRequest() throws -> URLRequest{
+     func prepareRequest() throws -> URLRequest{
         var request = URLRequest(url: self.url)
         for (key, value) in self.headers{
             request.setValue(value, forHTTPHeaderField: key)
@@ -71,9 +72,13 @@ extension YouTubeMusic.Request{
 
 extension YouTubeMusic.Request{
     static func fetchSearchData(query: String) async -> Data? {
-        let body = YouTubeMusic.Body(query: query)
+        let body = YouTubeMusic.Request.Body(query: query)
         do{
-            let request = try YouTubeMusic.Request(body: body, method: "POST", url: YouTubeMusic.DefaultParam.urlSearch, headers: YouTubeMusic.DefaultParam.headers)
+            let request = try YouTubeMusic.Request(body: body,
+                                                   method: "POST",
+                                                   url: YouTubeMusic.Request.DefaultParam.urlSearch,
+                                                   headers: YouTubeMusic.Request.DefaultParam.headers
+            )
             let requestPayload = try request.prepareRequest()
             return try await request.fetch(from: requestPayload)
         } catch YouTubeMusic.Error.invalidBody {
