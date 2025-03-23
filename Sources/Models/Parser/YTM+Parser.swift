@@ -33,7 +33,7 @@ extension YouTubeMusic.Parser{
 extension YouTubeMusic.Parser{
     static func navigate<T>(jsonData: Data, path: [String]) throws -> T {
         guard let json = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
-            throw YouTubeMusic.Error.parsingError("Failed to parse initial JSON")
+            throw ParseError.decodeError
         }
         
         var current: Any = json
@@ -48,12 +48,12 @@ extension YouTubeMusic.Parser{
                 // Handle dictionary access
                 current = value
             } else {
-                throw YouTubeMusic.Error.parsingError("Unable to navigate to key: \(key)")
+                throw ParseError.keyError(key: key)
             }
         }
         // Try to cast to expected return type
         guard let result = current as? T else {
-            throw YouTubeMusic.Error.parsingError("Type mismatch: Expected \(T.self), but got \(type(of: current))")
+            throw ParseError.castError
         }
         
         return result
@@ -63,8 +63,6 @@ extension YouTubeMusic.Parser{
         do{
             let result: [String: Any]  = try navigate(jsonData: jsonData, path: path)
             return try JSONSerialization.data(withJSONObject: result)
-        } catch YouTubeMusic.Error.parsingError{
-            print("error navigatin JSON: \(String(describing: YouTubeMusic.Error.parsingError))")
         } catch {
             print("error extracting data: \(error)")
         }
@@ -82,7 +80,7 @@ extension YouTubeMusic.Parser{
         let dummy_res = SearchResult(items: [Song(videoID: "", artist: "", title: "", favorite: false, streamUrl: "")], totalResults: 1)
         return dummy_res
     }
-    static func parseArtist(data: Data) throws -> SearchResult<YouTubeMusic.Song>{
+    static func parseArtist(data: Data) throws -> SearchResult<Song>{
         let dummy_res = SearchResult(items: [Song(videoID: "", artist: "", title: "", favorite: false, streamUrl: "")], totalResults: 1)
         return dummy_res
     }

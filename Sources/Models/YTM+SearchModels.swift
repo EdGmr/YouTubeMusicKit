@@ -10,21 +10,17 @@
 import Foundation
 
 
-public extension YouTubeMusic{
-    struct SearchResult<T: Decodable> {
-        public let items: [T]
-        public let totalResults: Int?
-    }
-    
-    struct Song: Decodable{
-        public let videoID: String
-        public let artist: String
-        public let title: String
-        public let favorite: Bool?
-        public let streamUrl: String?
-    }
-    // MARK: TODO structs for different search results like playlist etc
+public struct SearchResult<T: Decodable> {
+    public let items: [T]
+    public let totalResults: Int?
 }
 
-public typealias SearchResult = YouTubeMusic.SearchResult
-public typealias Song = YouTubeMusic.Song
+public struct Song: Decodable{
+    public let videoID: String
+    public let artist: String
+    public let title: String
+    public let favorite: Bool?
+    public let streamUrl: String?
+}
+// MARK: TODO structs for different search results like playlist etc
+

@@ -29,7 +29,7 @@ extension YouTubeMusic{
 private extension YouTubeMusic.Request{
      func encodedBody() throws -> Data?{
         guard let body = self.body else { return nil }
-        return try JSONEncoder().encode(body)
+         return try JSONEncoder().encode(body)
         
     }
     
@@ -81,10 +81,6 @@ extension YouTubeMusic.Request{
             )
             let requestPayload = try request.prepareRequest()
             return try await request.fetch(from: requestPayload)
-        } catch YouTubeMusic.Error.invalidBody {
-            print("Invalid body in fetchSearchData")
-        } catch YouTubeMusic.Error.invalidURL {
-            print("Invalid URL in fetchSearchData")
         } catch {
             print("Error in fetchSearchData(): \(error)")
         }

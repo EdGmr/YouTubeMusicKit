@@ -36,7 +36,7 @@ public extension YouTubeMusic.timer {
 
 @available(macOS 13.0, *)
 public extension YouTubeMusic.log{
-    func printSongs(songs: [YouTubeMusic.Song]){
+    func printSongs(songs: [Song]){
         var i = 1
         for song in songs{
             print("search result: \(i)")

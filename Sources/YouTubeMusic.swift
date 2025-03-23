@@ -11,7 +11,6 @@ import Foundation
 @preconcurrency import os.log
 @MainActor
 public final class YouTubeMusic: Observable {
-    nonisolated public init(){
-    }
+    
 }
 
