@@ -64,7 +64,7 @@ private extension NetworkService{
                 switch httpResponse.statusCode {
                 case 200...299: // Success codes (2xx)
                     return data as! T // Proceed with the data
-                case 400...499: // Client errors
+                case 400...499: // Client errors //TODO: HANDLE ERRORS
                     throw NetworkError.clientError(statusCode: httpResponse.statusCode, data: data)
                     
                 case 500...599: // Server errors

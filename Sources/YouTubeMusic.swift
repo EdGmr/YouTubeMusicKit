@@ -18,8 +18,8 @@ public final class YouTubeMusic { // basically a facade
         parseService = ParseService()
     }
     
-    public func search<T: Codable>(_ query: String, option: SearchType? = nil) async throws -> SearchResult<T>? {
-        let body = Body(query: query, params:"EgWKAQIIAWoMEA4QChADEAQQCRAF")
+    public func search<T: Codable>(_ query: String, option: SearchType? = nil) async throws -> [T]? {
+        let body = Body(query: query, params: option!.param!) // finde das mit den params raus.
         let bodyData = try JSONEncoder().encode(body)
         let data = try await netService.post(url: DefaultRequest.urlSearch, body: bodyData) as Data
         let option = option ?? .song
@@ -27,14 +27,14 @@ public final class YouTubeMusic { // basically a facade
         do {
             switch option {
             case .song:
-                return try parseService.parse(jsonData: data, option: .search, searchType: .song) as SearchResult<T>
+                return try parseService.extractSongs(jsonData: data) 
                 
             case .album:
-                return try Parser.parseAlbum(data: data) as? SearchResult<T>
+                return nil
                 
             case .artist:
-                return try Parser.parseArtist(data: data) as? SearchResult<T>
-                
+                return nil
+
             case .playlist:
                 return nil
                 

@@ -35,3 +35,13 @@ enum ParseType{
     case playlist
 }
 
+extension ParseType{
+    var param: String?{
+        switch self{
+        case .song:
+            return "EgWKAQIIAWoMEA4QChADEAQQCRAF"
+        case .playlist:
+            return nil
+        }
+    }
+}

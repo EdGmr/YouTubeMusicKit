@@ -10,11 +10,6 @@
 import Foundation
 
 
-public struct SearchResult<T: Codable> {
-    public let items: [T]
-    public let totalResults: Int?
-}
-
 public struct Song: Codable{
     public let videoID: String
     public let artist: String
