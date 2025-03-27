@@ -9,8 +9,12 @@
 
 import Foundation
 
+// typealias Root = [RootElement]
+struct Root: Codable {
+    let contents: [Contents]
+}
 // MARK: - WelcomeElement
-struct RootElement: Codable {
+struct Contents: Codable {
     let itemSectionRenderer: ItemSectionRenderer?
     let musicCardShelfRenderer: MusicCardShelfRenderer?
     let musicShelfRenderer: MusicShelfRenderer?
@@ -917,4 +921,3 @@ struct MusicShelfDividerRenderer: Codable {
     let hidden: Bool?
 }
 
-typealias Root = [RootElement]

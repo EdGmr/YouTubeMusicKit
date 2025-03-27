@@ -6,7 +6,7 @@
 //
 
 struct NavPaths{
-    static let forSearchResults = [
+    static let forSongs = [
         "contents",
         "tabbedSearchResultsRenderer",
         "tabs",
@@ -14,19 +14,31 @@ struct NavPaths{
         "tabRenderer",
         "content",
         "sectionListRenderer",
-        "contents"]
+        "contents",
+        "1",
+        "musicShelfRenderer",
+    ]
+    static let forDefault = [
+        "contents",
+        "tabbedSearchResultsRenderer",
+        "tabs",
+        "0",
+        "tabRenderer",
+        "content",
+        "sectionListRenderer",
+        ]
 }
-enum ParseOption{
-    case search 
-    case placeHolder
+enum searchOption{
+    case defaultOption
+    case song
 }
-extension ParseOption{
+extension searchOption{
     var path: [String] {
         switch self{
-        case .search:
-            return NavPaths.forSearchResults
-        case .placeHolder:
-            return [""]
+        case .defaultOption:
+            return NavPaths.forDefault
+        case .song:
+            return NavPaths.forSongs
         }
     }
 }
@@ -41,7 +53,7 @@ extension ParseType{
         case .song:
             return "EgWKAQIIAWoMEA4QChADEAQQCRAF"
         case .playlist:
-            return nil
+            return "Eg-KAQwIABAAGAAgACgBMABqChAEEAMQCRAFEAo%3D"
         }
     }
 }

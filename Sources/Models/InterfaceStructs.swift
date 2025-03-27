@@ -4,6 +4,9 @@
 //
 //  Created by Eduard Gozembiler on 23.03.25.
 //
+public struct SearchResult<T>{
+    public let result: [T]
+}
 public struct Song: Codable{
     public let videoID: String
     public let artist: String
@@ -21,6 +24,7 @@ public enum SearchType{
     case artist
     case album
     case podcasts
+    case none
 }
 internal extension SearchType{
     var param: String?{
@@ -28,13 +32,15 @@ internal extension SearchType{
         case .song:
             return "EgWKAQIIAWoMEA4QChADEAQQCRAF"
         case .playlist:
-            return nil
+            return "Eg-KAQwIABAAGAAgACgBMABqChAEEAMQCRAFEAo%3D"
 
         case .artist:
             return nil
         case .album:
             return nil
         case .podcasts:
+            return nil
+        case .none:
             return nil
         }
     }

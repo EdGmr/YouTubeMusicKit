@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct ParseService{
+class Parser{
     //TODO: id und so mit ner find funktion finden und die key:value paare dann dynamisch setzen
     //das hartgedotete muss raus
 
     // convinience func
     func extractSongs<T: Codable>(jsonData: Data) throws -> [T]{
-        let content = try parse(jsonData: jsonData, option: .search) as Root
-        let Songs = content[1].musicShelfRenderer!.contents!
+        let content = try jsonDecoder(jsonData: jsonData, ofType: MusicShelfRenderer.self, option: .song)
+        let Songs = content.contents!
         var songResult = [Song(videoID: "", artist: "", title: "")]
         for item in Songs{
             let song = Song(videoID: item.musicResponsiveListItemRenderer!.playlistItemData!.videoID!,
@@ -25,15 +25,21 @@ struct ParseService{
         }
         return songResult as! [T]
     }
+    func extractDefault<T: Codable>(jsonData: Data) throws -> [T]{
+        let content: Any = try navigate(jsonData: jsonData, path: searchOption.defaultOption.path)
+        let newData = try JSONSerialization.data(withJSONObject: content)
+        let res = ["hallo", "tschus"]
+        return res as! [T]
+    }
     
 
-    private func parse<T: Decodable>(jsonData: Data, option: ParseOption) throws -> Array<T> {
-        let newRoot: [Any] = try navigate(jsonData: jsonData, path: option.path)
+    private func jsonDecoder<T: Decodable>(jsonData: Data, ofType: T.Type, option: searchOption) throws -> T {
+        let newRoot: Any = try navigate(jsonData: jsonData, path: option.path)
         let newData = try JSONSerialization.data(withJSONObject: newRoot)
-        return try JSONDecoder().decode(Root.self, from: newData) as! Array<T>
+        return try JSONDecoder().decode(T.self, from: newData)
     }
    //helper functions
-    private func navigate<T>(jsonData: Data, path: [String]) throws -> [T] {
+    private func navigate<T>(jsonData: Data, path: [String]) throws -> T {
         guard let json = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
             throw ParseError.decodeError
         }
@@ -53,7 +59,7 @@ struct ParseService{
             }
         }
         // Try to cast to expected return type
-        guard let result = current as? [T] else {
+        guard let result = current as? T else {
             throw ParseError.typeError
         }
         return result

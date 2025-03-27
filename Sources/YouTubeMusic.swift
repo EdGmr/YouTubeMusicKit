@@ -12,9 +12,9 @@ import Foundation
 @MainActor
 public final class YouTubeMusic { // basically a facade
     let netService: NetworkService
-    let parseService: ParseService
+    let parseService: Parser
     public init(){
         netService = NetworkService()
-        parseService = ParseService()
+        parseService = Parser()
     }
 }
