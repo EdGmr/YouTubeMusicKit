@@ -41,7 +41,7 @@ public extension YouTubeMusic.log{
         for song in songs{
             print("search result: \(i)")
             print(" author: \(song.artist)\n title: \(song.title)")
-            print(" https://www.youtube.com/watch?v=\(song.videoID)\n")
+            print(" https://www.youtube.com/watch?v=\(song.videoId)\n")
             i+=1
         }
     }

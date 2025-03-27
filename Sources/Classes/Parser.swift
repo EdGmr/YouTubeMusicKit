@@ -12,22 +12,41 @@ final class Parser: Sendable{
     //TODO: id und so mit ner find funktion finden und die key:value paare dann dynamisch setzen
     //das hartgedotete muss raus
     
-    func extract_song<T: SearchResultType>(obj: MusicShelfRenderer, option: SearchType) throws -> [T]{
-        var obj_ = obj.contents!
-        let tmp = obj_.filter {($0.musicResponsiveListItemRenderer?.playlistItemData?.videoID!.count)! > 0}
-        var res: [String] = obj.contents!.compactMap { item in
+    func extractInfo(obj: MusicShelfRenderer, option: SearchType) throws -> [def]{
+        var contents = obj.contents!
+
+        return obj.contents!.compactMap { item in
+            var views: String?
+            var duration: String?
             let renderer = item.musicResponsiveListItemRenderer
             let playlistItemData = item.musicResponsiveListItemRenderer?.playlistItemData
             let videoID = item.musicResponsiveListItemRenderer?.playlistItemData?.videoID
-            let flexColumns = item.musicResponsiveListItemRenderer?.flexColumns
             let title = item.musicResponsiveListItemRenderer?.flexColumns?[0].musicResponsiveListItemFlexColumnRenderer?.text?.runs?[0].text!
             let artist = item.musicResponsiveListItemRenderer?.flexColumns?[1].musicResponsiveListItemFlexColumnRenderer?.text?.runs?[0].text!
-            return "S"
+            let name = item.musicResponsiveListItemRenderer?.flexColumns?[0].musicResponsiveListItemFlexColumnRenderer?.text?.runs?[0].text!
+            let browseId = item.musicResponsiveListItemRenderer?.navigationEndpoint?.browseEndpoint?.browseID
+            
+            if option == .video{
+                duration = (item.musicResponsiveListItemRenderer?.flexColumns?[1].musicResponsiveListItemFlexColumnRenderer?.text?.runs?[6].text)!
+                views = (item.musicResponsiveListItemRenderer?.flexColumns?[1].musicResponsiveListItemFlexColumnRenderer?.text?.runs?[4].text)!
+            } else {
+                duration = nil
+                views = nil
+            }
+            return def(
+                videoID: videoID,
+                title: title,
+                duration: duration,
+                browseId: browseId,
+                name: name,
+                views: views
+            )
+                
         }
-        return [Song()] as! [T]
     }
     
     func extract_default<T: SearchResultType>(obj: Root, option: SearchType) throws -> [T]{
+        var store = [def]()
         var obj_ = obj.contents
         let tmp = obj_.filter { name in // filter only musicshelfitems
             if let name_ = name.itemSectionRenderer{
@@ -37,15 +56,25 @@ final class Parser: Sendable{
             }
             return true
         }
-        let songs = tmp.filter{ item in category(name: "Songs", val: item)! }
-        let artists = tmp.filter{ item in category(name: "Artists", val: item)! }
-
-
-        return [Song()] as! [T]
+        
+        try SearchType.allCases.forEach{ c in
+            let objFiltered = try tmp.filter{ ($0.musicShelfRenderer?.title?.runs?[0].text?.contains(c.rawValue))!}
+            if !objFiltered.isEmpty {
+                let tmpr = try extractInfo(obj: objFiltered[0].musicShelfRenderer!, option: c)
+                store.append(contentsOf: tmpr)
+            }
+            //extractInfo(obj: obj[0].musicShelfRenderer?, option: <#T##SearchType#>)
+        }
+        
+        
+        //  let songs = tmp.filter{ item in category(name: "Songs", val: item)! }
+        //let artists = tmp.filter{ item in category(name: "Artists", val: item)! }
+        return store as! [T]
     }
     func category(name: String, val: Contents) -> Bool? {
         return val.musicShelfRenderer?.title?.runs?[0].text?.contains(name)
     }
+    //func getSongs(contents: Contents, )
     
     func extract<T: SearchResultType>(jsonData: Data, with option: SearchType) throws -> [T]{
         let decoder = SearchType.song.decodeType
@@ -53,7 +82,7 @@ final class Parser: Sendable{
         let obj_def = try parse(data: jsonData, path: SearchType.Default.path, decoder: SearchType.Default.decodeType) as! Root
         //let obj = try parse(data: jsonData, path: path, decoder: decoder) as! MusicShelfRenderer
         //return try extract_song(obj: obj, option: option)
-        return try extract_default(obj: obj_def, option: .Default)
+        return try extract_default(obj: obj_def, option: .Default) as [T]
     }
     
     func parse<T: Codable>(data: Data, path: [String], decoder: T.Type) throws -> T{
@@ -109,9 +138,9 @@ extension Extract{
     func extract<T: SearchResultType>(obj: Codable, option: SearchType) throws -> [T]{
         switch option{
         case .song:
-            return [Song()] as! [T]
+            return [def()] as! [T]
         default:
-            return [Song()] as! [T]
+            return [def()] as! [T]
         }
     }
 }

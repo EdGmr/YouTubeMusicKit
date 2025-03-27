@@ -20,32 +20,37 @@ public protocol SearchResultType: Codable, Sendable {}
     }
 }*/
 
-public struct def: SearchResultType{
+public struct def: SearchResultType {
+    public var songStruct: Song?
+    public var podcastStruct: Podcast?
+    public var albumStruct: Album?
+    public var videoStruct: Video?
+    public var artistStruct: Artist?
+    
+    public var videoID: String?
+    public var artist: String?
+    public var title: String?
+    public var album: String?
+    public var duration: String?
+    public var duration_seconds: Int?
+    public var is_explicit: Bool?
+    public var browseId: String?
+    public var name: String?
+    public var shuffleId: String?
+    public var radioId: String?
+    public var views: String?
     
 }
+
 public struct Song: SearchResultType{
-    public let videoID: String?
+    public let videoId: String?
     public let artist: String?
     public let title: String?
     public let album: String?
     public let duration: String?
     public let duration_seconds: Int?
     public let is_explicit: Bool?
-    init(videoID: String?=nil,
-         artist: String?=nil,
-         title: String?=nil,
-         album: String?=nil,
-         duration: String?=nil,
-         duration_seconds: Int?=nil,
-         is_explicit: Bool?=nil) {
-        self.videoID = videoID
-        self.artist = artist
-        self.title = title
-        self.album = album
-        self.duration = duration
-        self.duration_seconds = duration_seconds
-        self.is_explicit = is_explicit
-    }
+    
 }
 
 public struct Playlist: SearchResultType{
@@ -54,7 +59,7 @@ public struct Playlist: SearchResultType{
 }
 // MARK: TODO structs for different search results like playlist etc
 public struct Podcast: SearchResultType{
-    public let id: String
+    public let name: String
     public let title: String
 }
 
@@ -69,8 +74,8 @@ public struct Album: SearchResultType{
 public struct Artist: SearchResultType{
     public let browseId: String
     public let name: String
-    public let shuffleId: String
-    public let radioId: String
+    public let shuffleId: String?
+    public let radioId: String?
 }
 
 public struct Video: SearchResultType{
@@ -79,7 +84,7 @@ public struct Video: SearchResultType{
     public let artist: String
     public let views: String
     public let duration: String
-    public let duration_seconds: String
+    public let duration_seconds: String?
 }
 
 public enum SearchType: String, Sendable, CaseIterable{
