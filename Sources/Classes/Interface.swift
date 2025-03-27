@@ -13,10 +13,7 @@ public extension YouTubeMusic{
         let payload = try JSONEncoder().encode(Body(query: query, params: searchType.param))
         let data = try await self.networkService.post(url: DefaultRequest.urlSearch, payload: payload)
         do {
-            return try self.parser.extract(
-                jsonData: data,
-                with: searchType
-            )
+            return try self.parser.extractSearchResults(jsonData: data, option: searchType)
         } catch {
             print("Error parsing search result: \(error)")
             return nil

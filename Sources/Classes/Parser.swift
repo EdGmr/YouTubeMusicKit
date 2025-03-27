@@ -50,7 +50,7 @@ final class Parser: Sendable{
         let newRoot = try navigate(jsonData: jsonData, path: option.path)
         let decoder = option.decodeType
         let obj = try JSONDecoder().decode(decoder, from: navigate(jsonData: jsonData, path: option.path))
-        return try extract_default(obj: obj as! Root, option: option) as [T]
+        return try extractInfo(obj: obj as! MusicShelfRenderer, option: option) as [T]
     }
     
     func navigate(jsonData: Data, path: [String]) throws -> Data {
@@ -90,28 +90,63 @@ final class Parser: Sendable{
             return json
         }
     }
-    func extract_default<T: SearchResultType>(obj: Root, option: SearchType) throws -> [T]{
-        var store = [T]()
-        var obj_ = obj.contents
-        let tmp = obj_.filter { name in // filter only musicshelfitems
-            if let name_ = name.itemSectionRenderer{
-                return false
-            } else if let name_ = name.musicCardShelfRenderer{
-                return false
-            }
-            return true
-        }
+    func extractSearchResults<T: SearchResultType>(
+        jsonData: Data,
+        option: SearchType
+    ) throws -> [T] {
+        let decoder = JSONDecoder()
+        let root = try decoder.decode(Root.self, from: navigate(jsonData: jsonData, path: SearchType.Default.path))
         
-        try SearchType.allCases.forEach{ c in
-            let objFiltered = try tmp.filter{ ($0.musicShelfRenderer?.title?.runs?[0].text?.contains(c.rawValue))!}
-            if !objFiltered.isEmpty {
-                let tmpr = extractInfo(obj: objFiltered[0].musicShelfRenderer!, option: c) as [T]
-                store.append(contentsOf: tmpr)
-            }
+        guard let renderer = root.contents[1].musicShelfRenderer else {
+            return []
         }
-        return store
+
+        return renderer.decodeContents(option: option)
     }
 }
+extension MusicShelfRendererContent {
+        func decode<T: SearchResultType>(option: SearchType) -> T? {
+            guard let renderer = musicResponsiveListItemRenderer else { return nil }
+            
+            // Create a dictionary of values that can be used for decoding
+            var jsonDict: [String: Any?] = [
+                "videoId": renderer.playlistItemData?.videoID,
+                "title": renderer.flexColumns?[0]
+                    .musicResponsiveListItemFlexColumnRenderer?
+                    .text?.runs?[0].text,
+                "artist": renderer.flexColumns?[1]
+                    .musicResponsiveListItemFlexColumnRenderer?
+                    .text?.runs?[0].text
+            ]
+            
+            // Add additional details based on search type
+            if option == .video {
+                jsonDict["views"] = renderer.flexColumns?[1]
+                    .musicResponsiveListItemFlexColumnRenderer?
+                    .text?.runs?[4].text
+                jsonDict["duration"] = renderer.flexColumns?[1]
+                    .musicResponsiveListItemFlexColumnRenderer?
+                    .text?.runs?[6].text
+            }
+            
+            // Convert to JSON data for decoding
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: jsonDict.compactMapValues { $0 })
+                return try JSONDecoder().decode(T.self, from: jsonData)
+            } catch {
+                print("Decoding error: \(error)")
+                return nil
+            }
+        }
+    }
+
+extension MusicShelfRenderer {
+        // Decode an array of search results
+        func decodeContents<T: SearchResultType>(option: SearchType) -> [T] {
+            return contents?
+                .compactMap { $0.decode(option: option) } ?? []
+        }
+    }
 
 extension SearchType{
     var path: [String] {
