@@ -13,4 +13,7 @@ enum ParseError: Error {
     case castError
     case encoderError
     case typeError
+    case pathNotFound(path: [String])
+    case extractionSong(villian: MusicShelfRendererContent)
+    case extraction(villian: Contents)
 }

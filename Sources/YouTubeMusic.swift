@@ -9,11 +9,11 @@
 
 import Foundation
 //@preconcurrency import os.log
-public final class YouTubeMusic { // basically a facade
-    let netService: NetworkService
-    let parseService: Parser
+public final class YouTubeMusic: Sendable{ // basically a facade
+     let networkService: NetworkService
+     let parser: Parser
     public init(){
-        netService = NetworkService()
-        parseService = Parser()
+        self.networkService = NetworkService()
+        self.parser = Parser()
     }
 }

@@ -6,11 +6,13 @@
 //
 import Foundation
 
-enum NetworkError: Error {
-    case invalidResponse
-    case clientError(statusCode: Int, data: Data)
-    case serverError(statusCode: Int)
-    case unexpectedStatusCode(Int)
-    case bodyNotAllowedForMethod(HTTPMethod)
-    case unexpectedResponseType
+extension NetworkService{
+    enum NetworkError: Error {
+        case invalidResponse
+        case clientError(statusCode: Int, data: Data)
+        case serverError(statusCode: Int)
+        case unexpectedStatusCode(Int)
+        case bodyNotAllowedForMethod(HTTPMethod)
+        case unexpectedResponseType
+    }
 }

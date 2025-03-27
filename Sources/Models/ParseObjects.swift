@@ -8,38 +8,38 @@
 //   let welcome = try? JSONDecoder().decode(Welcome.self, from: jsonData)
 
 import Foundation
-
 // typealias Root = [RootElement]
-struct Root: Codable {
+protocol ParseObjects: Codable{}
+struct Root: SearchResultType {
     let contents: [Contents]
 }
 // MARK: - WelcomeElement
-struct Contents: Codable {
+struct Contents: ParseObjects {
     let itemSectionRenderer: ItemSectionRenderer?
     let musicCardShelfRenderer: MusicCardShelfRenderer?
     let musicShelfRenderer: MusicShelfRenderer?
 }
 
 // MARK: - ItemSectionRenderer
-struct ItemSectionRenderer: Codable {
+struct ItemSectionRenderer: ParseObjects {
     let trackingParams: String?
     let contents: [ItemSectionRendererContent]?
 }
 
 // MARK: - ItemSectionRendererContent
-struct ItemSectionRendererContent: Codable {
+struct ItemSectionRendererContent: ParseObjects {
     let messageRenderer: PurpleMessageRenderer?
 }
 
 // MARK: - PurpleMessageRenderer
-struct PurpleMessageRenderer: Codable {
+struct PurpleMessageRenderer: ParseObjects {
     let button: MessageRendererButton?
     let style: StyleClass?
     let trackingParams: String?
 }
 
 // MARK: - MessageRendererButton
-struct MessageRendererButton: Codable {
+struct MessageRendererButton: ParseObjects {
     let buttonRenderer: PurpleButtonRenderer?
 }
 
