@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Parser{
+internal class Parser{
     //TODO: id und so mit ner find funktion finden und die key:value paare dann dynamisch setzen
     //das hartgedotete muss raus
 

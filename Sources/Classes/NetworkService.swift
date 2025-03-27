@@ -5,15 +5,14 @@
 //  Created by Eduard Gozembiler on 23.03.25.
 //
 import Foundation
-
-final class NetworkService: Sendable {
+import FoundationNetworking
+@MainActor
+internal final class NetworkService: Sendable {
     
-    static let sessionManager: URLSession = {
-        let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = 30 // seconds
-        configuration.timeoutIntervalForResource = 30 // seconds
-        return URLSession(configuration: configuration)
-    }()
+    let sessionManager: URLSession
+    nonisolated init(session: URLSession = URLSession.shared){
+        sessionManager = session
+    }
     
     func request<T: Decodable>(
         url: URL,
@@ -59,7 +58,7 @@ private extension NetworkService{
         }
         
         private func performRequest<T: Decodable>(_ request: URLRequest) async throws -> T {
-            let (data, response) = try await NetworkService.sessionManager.data(for: request)
+            let (data, response) = try await self.sessionManager.data(for: request)
             if let httpResponse = response as? HTTPURLResponse {
                 switch httpResponse.statusCode {
                 case 200...299: // Success codes (2xx)

@@ -8,8 +8,7 @@
 //
 
 import Foundation
-@preconcurrency import os.log
-@MainActor
+//@preconcurrency import os.log
 public final class YouTubeMusic { // basically a facade
     let netService: NetworkService
     let parseService: Parser
