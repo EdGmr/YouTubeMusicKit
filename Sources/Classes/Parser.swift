@@ -12,48 +12,21 @@ final class Parser: Sendable{
     //TODO: id und so mit ner find funktion finden und die key:value paare dann dynamisch setzen
     //das hartgedotete muss raus
     
-    func extractMap<T: SearchResultType>(item: MusicShelfRendererContent, option: SearchType) -> T{
-        var views: String?
-        var duration: String?
-        let renderer = item.musicResponsiveListItemRenderer
-        let playlistItemData = item.musicResponsiveListItemRenderer?.playlistItemData
-        let videoID = item.musicResponsiveListItemRenderer?.playlistItemData?.videoID
-        let title = item.musicResponsiveListItemRenderer?.flexColumns?[0].musicResponsiveListItemFlexColumnRenderer?.text?.runs?[0].text!
-        let artist = item.musicResponsiveListItemRenderer?.flexColumns?[1].musicResponsiveListItemFlexColumnRenderer?.text?.runs?[0].text!
-        let name = item.musicResponsiveListItemRenderer?.flexColumns?[0].musicResponsiveListItemFlexColumnRenderer?.text?.runs?[0].text!
-        let browseId = item.musicResponsiveListItemRenderer?.navigationEndpoint?.browseEndpoint?.browseID
+    func extractSearchResults<T: SearchResultType>(
+        jsonData: Data,
+        option: SearchType
+    ) throws -> [T] {
+        let decoder = JSONDecoder()
+        let root = try decoder.decode(Root.self, from: navigate(jsonData: jsonData, path: SearchType.Default.path))
         
-        if option == .video{
-            duration = (item.musicResponsiveListItemRenderer?.flexColumns?[1].musicResponsiveListItemFlexColumnRenderer?.text?.runs?[6].text)!
-            views = (item.musicResponsiveListItemRenderer?.flexColumns?[1].musicResponsiveListItemFlexColumnRenderer?.text?.runs?[4].text)!
-        } else {
-            duration = nil
-            views = nil
+        guard let renderer = root.contents.last?.musicShelfRenderer else {
+            return []
         }
-        switch option{
-        case .song:
-            return Song(videoId: videoID, artist: artist, title: title, album: name, duration: duration, duration_seconds: nil, is_explicit: nil) as! T
-        case .video:
-            return Video(videoId: videoID!, title: title!, artist: artist!, views: views!, duration: duration!, duration_seconds: nil) as! T
-        default:
-            return Song(videoId: videoID, artist: artist, title: title, album: name, duration: duration, duration_seconds: nil, is_explicit: nil) as! T
-        }
+
+        return renderer.decodeContents(option: option)
     }
     
-    func extractInfo<T: SearchResultType>(obj: MusicShelfRenderer, option: SearchType) -> [T]{
-        var contents = obj.contents!
-        return obj.contents!.compactMap { item in extractMap(item: item, option: option) as T }
-    }
-    
-    //func getSongs(contents: Contents, )
-    func extract<T: SearchResultType>(jsonData: Data, with option: SearchType) throws -> [T]{
-        let newRoot = try navigate(jsonData: jsonData, path: option.path)
-        let decoder = option.decodeType
-        let obj = try JSONDecoder().decode(decoder, from: navigate(jsonData: jsonData, path: option.path))
-        return try extractInfo(obj: obj as! MusicShelfRenderer, option: option) as [T]
-    }
-    
-    func navigate(jsonData: Data, path: [String]) throws -> Data {
+    private func navigate(jsonData: Data, path: [String]) throws -> Data {
         // First, parse the entire JSON
         let json = try JSONSerialization.jsonObject(with: jsonData, options: [])
         let result = try navigateRecursive(from: json, path: path)
@@ -90,19 +63,8 @@ final class Parser: Sendable{
             return json
         }
     }
-    func extractSearchResults<T: SearchResultType>(
-        jsonData: Data,
-        option: SearchType
-    ) throws -> [T] {
-        let decoder = JSONDecoder()
-        let root = try decoder.decode(Root.self, from: navigate(jsonData: jsonData, path: SearchType.Default.path))
-        
-        guard let renderer = root.contents[1].musicShelfRenderer else {
-            return []
-        }
+    
 
-        return renderer.decodeContents(option: option)
-    }
 }
 extension MusicShelfRendererContent {
         func decode<T: SearchResultType>(option: SearchType) -> T? {
@@ -116,7 +78,9 @@ extension MusicShelfRendererContent {
                     .text?.runs?[0].text,
                 "artist": renderer.flexColumns?[1]
                     .musicResponsiveListItemFlexColumnRenderer?
-                    .text?.runs?[0].text
+                    .text?.runs?[0].text,
+                "browseId": renderer.navigationEndpoint?.browseEndpoint?.browseID,
+                "name":  renderer.flexColumns?[0].musicResponsiveListItemFlexColumnRenderer?.text?.runs?[0].text!
             ]
             
             // Add additional details based on search type

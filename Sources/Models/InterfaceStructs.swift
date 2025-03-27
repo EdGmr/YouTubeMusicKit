@@ -72,8 +72,8 @@ public struct Album: SearchResultType{
 }
 
 public struct Artist: SearchResultType{
-    public let browseId: String
-    public let name: String
+    public let browseId: String?
+    public let name: String?
     public let shuffleId: String?
     public let radioId: String?
 }
